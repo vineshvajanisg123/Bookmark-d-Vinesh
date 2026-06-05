@@ -85,7 +85,7 @@ interface Screen1WelcomeProps {
   onBegin: () => void;
   onExploreStacks: () => void;
   libraryBooks: Book[];
-  onOpenFullLibrary: () => void;
+  onOpenFullBookshelf: () => void;
   onRemoveFromLibrary: (book: Book) => void;
 }
 
@@ -93,7 +93,7 @@ export default function Screen1Welcome({
   onBegin, 
   onExploreStacks,
   libraryBooks = [],
-  onOpenFullLibrary,
+  onOpenFullBookshelf,
   onRemoveFromLibrary
 }: Screen1WelcomeProps) {
   const [activeTab, setActiveTab] = useState<"features" | "how-it-works" | "reviews">("features");
@@ -141,7 +141,7 @@ export default function Screen1Welcome({
               className="px-8 py-4 bg-white hover:bg-[#FCFBF8] border border-[#E8E2D8] hover:border-[#5E5A55] text-[#1E1E1B] font-serif text-sm rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs hover:shadow active:scale-98"
             >
               <Compass className="w-4 h-4 text-[#365947]" />
-              Discover the Library
+              Discover the Bookshelf
             </button>
           </div>
 
@@ -163,7 +163,7 @@ export default function Screen1Welcome({
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
               src={ladyReadingPhoto}
-              alt="A reader reflecting in a quiet personal library room"
+              alt="A reader reflecting in a quiet personal bookshelf room"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />
@@ -174,15 +174,15 @@ export default function Screen1Welcome({
 
       </main>
 
-      {/* 3. My Library Dedicated Row with Perfect Balance and Symmetry */}
+      {/* 3. My Bookshelf Dedicated Row with Perfect Balance and Symmetry */}
       <section 
-        id="my-library-section" 
+        id="my-bookshelf-section" 
         className="py-16 border-t border-[#E8E2D8]/80 max-w-7xl mx-auto px-6 md:px-12 lg:px-24 space-y-6"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="font-mono text-[10px] uppercase tracking-widest text-[#365947] font-bold">
-              MY LIBRARY SANCTUARY
+              MY BOOKSHELF SANCTUARY
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#E07A5F]" />
             <span className="text-[10px] font-mono text-[#5E5A55] uppercase tracking-wider font-semibold bg-[#FAF6F0] px-2 py-0.5 rounded-full border border-[#E8E2D8]">
@@ -191,9 +191,9 @@ export default function Screen1Welcome({
           </div>
           
           <button 
-            onClick={onOpenFullLibrary}
+            onClick={onOpenFullBookshelf}
             className="text-[10px] font-mono uppercase tracking-widest text-[#E07A5F] hover:text-[#D0694D] font-bold cursor-pointer transition-colors flex items-center gap-1"
-            id="see-more-library"
+            id="see-more-bookshelf"
           >
             See all volumes <ArrowRight className="w-3 h-3" />
           </button>
@@ -202,7 +202,7 @@ export default function Screen1Welcome({
         <div className="bg-[#FCFBF8] rounded-2xl border border-[#E8E2D8] p-6 shadow-xs min-h-[140px]">
           {libraryBooks.length === 0 ? (
             <div className="text-center py-8 space-y-2 flex flex-col items-center justify-center min-h-[110px]">
-              <p className="font-serif italic text-sm text-[#5E5A55]">Your personal library sanctuary is quiet.</p>
+              <p className="font-serif italic text-sm text-[#5E5A55]">Your personal bookshelf sanctuary is quiet.</p>
               <p className="font-sans text-[11px] text-[#A29E99] max-w-sm leading-relaxed mx-auto">
                 Step into the Discovery Rooms, choose a stack shelf, and add any titles that call to you to begin custom curation.
               </p>
@@ -222,7 +222,7 @@ export default function Screen1Welcome({
                         onRemoveFromLibrary(book);
                       }}
                       className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full border border-[#E8E2D8] hover:border-red-400 hover:text-red-500 hover:bg-red-50 transition-all cursor-pointer opacity-0 group-hover:opacity-100 flex items-center justify-center bg-white shadow-xs z-30"
-                      title="Remove from Library"
+                      title="Remove from Bookshelf"
                     >
                       <X className="w-2 h-2" />
                     </button>
@@ -259,7 +259,7 @@ export default function Screen1Welcome({
               
               {libraryBooks.length > 5 ? (
                 <button
-                  onClick={onOpenFullLibrary}
+                  onClick={onOpenFullBookshelf}
                   className="p-3 bg-[#FAF6F0] hover:bg-white border border-dashed border-[#E8E2D8] hover:border-[#365947]/45 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer min-h-[140px] transition-all group shrink-0"
                 >
                   <span className="font-mono text-[10px] text-[#365947] font-bold">+{libraryBooks.length - 5} MORE</span>
@@ -313,7 +313,7 @@ export default function Screen1Welcome({
               {
                 step: "3",
                 title: "Unlock your matching stacks",
-                desc: "Receive your custom mental DNA archetype and step straight into the discovery rooms to explore our quiet library shelf."
+                desc: "Receive your custom mental DNA archetype and step straight into the discovery rooms to explore our quiet bookshelf."
               }
             ].map((node, i) => (
               <div key={i} className="space-y-4 text-center px-4">

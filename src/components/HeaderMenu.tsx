@@ -55,10 +55,10 @@ export default function HeaderMenu({ onHome, onBegin, activeScreen }: HeaderMenu
             Features
           </button>
           <button 
-            onClick={() => scrollToSection("my-library-section")} 
+            onClick={() => scrollToSection("my-bookshelf-section")} 
             className="hover:text-[#365947] cursor-pointer transition-colors"
           >
-            Your Library
+            Your Bookshelf
           </button>
           <button 
             onClick={() => scrollToSection("reviews-section")} 

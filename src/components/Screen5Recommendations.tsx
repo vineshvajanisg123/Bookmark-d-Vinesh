@@ -237,8 +237,8 @@ export default function Screen5Recommendations({
             >
               <BookOpen className="w-4 h-4 text-[#365947]" />
               {libraryBooks.some((b) => b.title.toLowerCase() === heroBook.title.toLowerCase())
-                ? "Added to Library"
-                : "Save to My Library"}
+                ? "Added to Bookshelf"
+                : "Save to My Bookshelf"}
             </button>
           </div>
         </div>
@@ -350,8 +350,8 @@ export default function Screen5Recommendations({
                       >
                         <BookOpen className="w-3.5 h-3.5 shrink-0" />
                         {libraryBooks.some((b) => b.title.toLowerCase() === book.title.toLowerCase())
-                          ? "In Library"
-                          : "Save to Library"}
+                          ? "On Bookshelf"
+                          : "Save to Bookshelf"}
                       </button>
 
                       <span className="text-[#E8E2D8] text-xs">|</span>
@@ -388,7 +388,7 @@ export default function Screen5Recommendations({
             className="px-6 py-3 border border-[#365947] text-[#365947] hover:bg-[#365947] hover:text-white font-sans text-xs font-semibold rounded-full transition-all duration-300 cursor-pointer shadow-xs"
             id="stacks-wander-btn"
           >
-            Discover the Library
+            Discover the Bookshelf
           </button>
         </div>
       </footer>

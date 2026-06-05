@@ -3,19 +3,19 @@ import { Book } from "../types";
 import { X, ShoppingBag, ArrowUpRight, ArrowLeft } from "lucide-react";
 import { getBookCover } from "../data/curatedBooks";
 
-interface Screen7MyLibraryProps {
+interface Screen7MyBookshelfProps {
   libraryBooks: Book[];
   onRemoveBook: (book: Book) => void;
   onHome: () => void;
   onExplore: () => void;
 }
 
-export default function Screen7MyLibrary({
+export default function Screen7MyBookshelf({
   libraryBooks,
   onRemoveBook,
   onHome,
   onExplore,
-}: Screen7MyLibraryProps) {
+}: Screen7MyBookshelfProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filtered = libraryBooks.filter((b) =>
@@ -42,7 +42,7 @@ export default function Screen7MyLibrary({
 
         {/* Title and Intro */}
         <div className="space-y-2 border-b border-[#E8E2D8]/60 pb-6">
-          <h1 className="font-serif text-3xl md:text-4xl font-semibold text-brand-text">My Library Sanctuary</h1>
+          <h1 className="font-serif text-3xl md:text-4xl font-semibold text-brand-text">My Bookshelf Sanctuary</h1>
           <p className="font-serif italic text-brand-muted text-sm max-w-xl">
             A quiet collection of volumes you have saved during your stay in the Discovery Rooms. No metrics, no social pressure. Just your path.
           </p>
@@ -77,7 +77,7 @@ export default function Screen7MyLibrary({
         {filtered.length === 0 ? (
           <div className="py-20 text-center border border-dashed border-[#E8E2D8] bg-[#FCFBF8] rounded-2xl p-8 max-w-2xl mx-auto space-y-4">
             <span className="font-serif text-lg italic text-[#5E5A55] block">
-              {searchTerm ? "No local matches in your sanctuary registry." : "Your personal library is quiet."}
+              {searchTerm ? "No local matches in your sanctuary registry." : "Your personal bookshelf is quiet."}
             </span>
             <p className="text-xs text-brand-muted font-sans font-light leading-relaxed max-w-sm mx-auto">
               {searchTerm 
@@ -89,7 +89,7 @@ export default function Screen7MyLibrary({
                 onClick={onExplore}
                 className="px-6 py-3 bg-[#365947] hover:bg-[#2E4C3D] text-white text-xs font-sans font-semibold rounded-full shadow-sm hover:shadow transition-all cursor-pointer"
               >
-                Discover the Library
+                Discover the Bookshelf
               </button>
             )}
           </div>
@@ -106,7 +106,7 @@ export default function Screen7MyLibrary({
                   <button
                     onClick={() => onRemoveBook(book)}
                     className="absolute top-4 right-4 p-1.5 rounded-full bg-white/80 border border-[#E8E2D8] hover:border-red-400 hover:text-red-500 transition-colors cursor-pointer z-20 shadow-xs"
-                    title="Remove from Library"
+                    title="Remove from Bookshelf"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>

@@ -130,7 +130,7 @@ export default function Screen6WanderTheStacks({
             )}
             <span className="font-mono text-[9px] uppercase tracking-widest text-[#365947] font-bold">THE DISCOVERY ROOMS</span>
           </div>
-          <h1 className="font-serif text-3xl font-semibold text-brand-text">Discover the Library</h1>
+          <h1 className="font-serif text-3xl font-semibold text-brand-text">Discover the Bookshelf</h1>
           <p className="font-serif italic text-brand-muted text-sm">Quietly slide along the shelves. Listen. Explore.</p>
         </div>
 
@@ -287,7 +287,7 @@ export default function Screen6WanderTheStacks({
                     Book Overview
                   </span>
                   <p className="font-sans text-sm text-brand-muted leading-relaxed font-light">
-                    {selectedBook.description || "A highly esteemed text in our private library selection. Selected because of its pristine narrative structure, cognitive clarity, and ability to challenge baseline perspectives."}
+                    {selectedBook.description || "A highly esteemed text in our private bookshelf selection. Selected because of its pristine narrative structure, cognitive clarity, and ability to challenge baseline perspectives."}
                   </p>
                 </div>
               </div>
@@ -317,8 +317,8 @@ export default function Screen6WanderTheStacks({
                 >
                   <BookOpen className="w-4 h-4 shrink-0" />
                   {libraryBooks.some((b) => b.title.toLowerCase() === selectedBook.title.toLowerCase())
-                    ? "In Your Library"
-                    : "Save to My Library"}
+                    ? "On Your Bookshelf"
+                    : "Save to My Bookshelf"}
                 </button>
                 
                 <button

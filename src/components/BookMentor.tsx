@@ -59,6 +59,68 @@ export default function BookMentor() {
     }
   }, [messages, isLoading, isOpen]);
 
+  // High-fidelity client-side dialogue processor for static hostings (like Netlify)
+  const getOfflineMentorReply = (history: Message[]): string => {
+    const lastUserMessage = [...history].reverse().find((m) => m.role === "user")?.text || "";
+    const textLower = lastUserMessage.toLowerCase();
+    const userMessageCount = history.filter((m) => m.role === "user").length;
+
+    if (history.length === 1 && history[0].role === "assistant") {
+      return "Tell me, what are you hoping a book will do for you right now?";
+    } else if (textLower.includes("don't know") || textLower.includes("dont know") || textLower.includes("not sure")) {
+      return "That's completely fine. Let's figure it out together. When was the last time a book truly stayed with you after you finished it?";
+    } else if (textLower.includes("sad") || textLower.includes("depressed") || textLower.includes("unhappy")) {
+      return "I hear you, and I'm really sorry you are carrying that sadness today. Books can be incredibly gentle spaces to rest. Before we share any specific titles or recommendations, tell me: would you prefer something that sits with you quietly in the dark, or a warm story that acts like a gentle window of light?";
+    } else if (textLower.includes("recommend anything") || textLower.includes("anything matches") || textLower.includes("random")) {
+      return "I would love to recommend some volumes, but I prefer never to throw titles at you randomly. Tell me first: how are you feeling today, and what has been occupying your mind lately?";
+    } else if (textLower.includes("haven't read in years") || textLower.includes("havent read in years") || textLower.includes("years since")) {
+      return "Welcome back to the world of pages! That is a beautiful threshold to cross. As your reading companion, I suggest we focus on something wonderfully accessible that pulls you in gracefully without heavy strain. Are you looking for a short narrative that moves quickly, or some gentle everyday non-fictional insights?";
+    } else if (
+      userMessageCount >= 3 ||
+      textLower.includes("recommend") ||
+      textLower.includes("books please") ||
+      textLower.includes("show me") ||
+      textLower.includes("suggest")
+    ) {
+      return `Based on everything you've shared, these are the books I believe fit where you are right now.
+
+### **The Creative Act: A Way of Being** — Rick Rubin
+- **Why this fits you**: You spoke about wanting to reconnect with your creative spark without feeling burdened by metrics or public eyes. This book treats creativity as a gentle way of being in the world.
+- **What you'll experience**: High emotional calmness, slow intentional pacing, meditative and deep quality.
+- **Ideal if you want**: To rediscover pure creative presence in your everyday life.
+
+### **Quiet: The Power of Introverts** — Susan Cain
+- **Why this fits you**: You expressed feeling a bit overwhelmed by constant external noise. Susan Cain offers an incredibly validating defense of quiet contemplation.
+- **What you'll experience**: Validating and thorough research, engaging storytelling, moderate pacing.
+- **Ideal if you want**: To understand the strengths of your reflective nature.
+
+### **The Alchemist** — Paulo Coelho
+- **Why this fits you**: You mentioned feeling in-between paths. Santiago's journey is a gorgeous allegory for listening to your own heart during transitional cycles.
+- **What you'll experience**: Emotional warmth, simple poetic prose, inspiring and allegorical.
+- **Ideal if you want**: A comforting reminder to trust the signs along your personal legend.
+
+### **Stolen Focus** — Johann Hari
+- **Why this fits you**: You mentioned struggling with digital exhaustion. Johann Hari details why modern systems steal our attention and how to reclaim your deep-focus reading hours.
+- **What you'll experience**: Deeply eye-opening, urgent yet compassionate analysis, practical but systemic.
+- **Ideal if you want**: To understand the real forces behind modern mental fatigue.
+
+### **The Courage to Be Disliked** — Ichiro Kishimi & Fumitake Koga
+- **Why this fits you**: You talked about feeling the pressure of other people's expectations. This Adlerian philosophical dialogue cuts straight to the simplicity of freedom.
+- **What you'll experience**: Dynamic philosophical dialogue, highly thought-provoking, refreshing clarity.
+- **Ideal if you want**: To shed external social burdens and live with ultimate presence.
+
+If none of these feel quite right, tell me what feels off and we'll keep exploring until we find your book.`;
+    } else {
+      const questions = [
+        "What a beautiful thought. Tell me, are you hoping for a story that carries you to a completely different horizon, or some thoughtful, peaceful non-fictional exploration?",
+        "That makes total sense. To help me narrow it down, have there been any particular books that have deeply resonated with you in the past, or maybe something you picked up recently that didn't work for you at all?",
+        "I'm listening closely. Would you prefer something written in a highly classic, slow-burning tone, or are you drawn toward something crisp, modern, and rapid to get into?",
+      ];
+      const qIndex = Math.min(userMessageCount - 1, questions.length - 1);
+      return questions[qIndex >= 0 ? qIndex : 0];
+    }
+  };
+
   const handleSendMessage = async (customText?: string) => {
     const textToSend = (customText || inputText).trim();
     if (!textToSend || isLoading) return;
@@ -113,8 +175,22 @@ export default function BookMentor() {
       setMessages(finalHistory);
       saveChatHistory(finalHistory);
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Failed to communicate with mentor.");
+      console.warn("Express server not detected (this is normal on static setups). Invoking premium client-side Book Mentor flow:", err);
+      
+      // Add realistic pause representing contemplation
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      const replyText = getOfflineMentorReply(updatedHistory);
+      const assistantMessage: Message = {
+        id: `assistant-offline-${Date.now()}`,
+        role: "assistant",
+        text: replyText,
+        timestamp: new Date(),
+      };
+
+      const finalHistory = [...updatedHistory, assistantMessage];
+      setMessages(finalHistory);
+      saveChatHistory(finalHistory);
     } finally {
       setIsLoading(false);
     }

@@ -8,20 +8,37 @@ interface Screen2DnaCollectionProps {
 }
 
 export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCollectionProps) {
-  const [formData, setFormData] = useState<SurveyState>({
-    lovedBook: "",
-    hatedBook: "",
+  const [lovedBooks, setLovedBooks] = useState<string[]>([""]);
+  const [hatedBooks, setHatedBooks] = useState<string[]>([""]);
+
+  const [formData, setFormData] = useState<Omit<SurveyState, "lovedBook" | "hatedBook">>({
     genrePreference: "",
     readingStyle: "",
     goal: "",
   });
 
-  // Validation checks as required
+  // Validation checks as required - first field of lovedBook must be filled
   const isFormFullyValid = 
-    formData.lovedBook.trim().length > 0 && 
+    lovedBooks[0]?.trim().length > 0 && 
     formData.genrePreference !== "" && 
     formData.readingStyle !== "" && 
     formData.goal !== "";
+
+  const handleFormSubmit = () => {
+    if (!isFormFullyValid) return;
+
+    // Filter out completely blank inputs and join them as comma-separated values to protect upstream type system
+    const lovedCombined = lovedBooks.filter((b) => b.trim() !== "").join(", ");
+    const hatedCombined = hatedBooks.filter((b) => b.trim() !== "").join(", ");
+
+    onSubmit({
+      lovedBook: lovedCombined,
+      hatedBook: hatedCombined,
+      genrePreference: formData.genrePreference,
+      readingStyle: formData.readingStyle,
+      goal: formData.goal,
+    });
+  };
 
   return (
     <div className="max-w-3xl mx-auto py-12 px-6 md:px-12 flex flex-col justify-between" id="collection-screen">
@@ -55,48 +72,114 @@ export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCol
           <div className="flex items-start gap-3">
             <span className="font-mono text-sm font-bold text-[#E07A5F] bg-[#E07A5F]/5 rounded-sm px-2 py-0.5 border border-[#E07A5F]/15">Q1</span>
             <div className="space-y-1">
-              <label htmlFor="loved-book" className="font-serif text-lg md:text-xl font-medium text-brand-text block">
+              <label className="font-serif text-lg md:text-xl font-medium text-brand-text block">
                 What is a book you absolutely loved?
               </label>
             </div>
           </div>
-          <div className="pl-11">
-            <div className="flex items-center gap-3 border-b border-brand-accent/30 focus-within:border-brand-accent pb-2">
-              <BookOpen className="text-brand-accent w-4.5 h-4.5 shrink-0" />
-              <input
-                id="loved-book"
-                type="text"
-                placeholder="Atomic Habits, To Kill a Mockingbird, etc."
-                value={formData.lovedBook}
-                onChange={(e) => setFormData((prev) => ({ ...prev, lovedBook: e.target.value }))}
-                className="w-full bg-transparent border-none outline-none text-base md:text-lg font-serif text-brand-text placeholder-brand-muted/40"
-              />
-            </div>
+          <div className="pl-11 space-y-3">
+            {lovedBooks.map((book, index) => (
+              <div 
+                key={index} 
+                className="flex items-center gap-3 border-b border-brand-accent/30 focus-within:border-brand-accent pb-2"
+              >
+                <BookOpen className="text-brand-accent w-4.5 h-4.5 shrink-0" />
+                <input
+                  type="text"
+                  placeholder={index === 0 ? "Atomic Habits, To Kill a Mockingbird, etc." : `Loved book #${index + 1}...`}
+                  value={book}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setLovedBooks((prev) => {
+                      const next = [...prev];
+                      next[index] = val;
+                      return next;
+                    });
+                  }}
+                  className="flex-grow bg-transparent border-none outline-none text-base md:text-lg font-serif text-brand-text placeholder-brand-muted/40"
+                />
+                
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setLovedBooks((prev) => prev.filter((_, idx) => idx !== index))}
+                    className="p-1 px-2 hover:bg-red-50 text-red-500 hover:text-red-700 hover:border-red-200 border border-transparent rounded-md transition-all text-xs font-mono font-bold cursor-pointer shrink-0"
+                    title="Remove book field"
+                  >
+                    Delete
+                  </button>
+                )}
+
+                {index === lovedBooks.length - 1 && lovedBooks.length < 5 && (
+                  <button
+                    type="button"
+                    onClick={() => setLovedBooks((prev) => [...prev, ""])}
+                    className="p-1 px-2.5 bg-[#365947]/5 hover:bg-[#365947]/10 text-[#365947] hover:text-[#2E4C3D] border border-[#365947]/20 rounded-md transition-all text-xs font-mono font-bold cursor-pointer shrink-0"
+                    title="Add another book field"
+                  >
+                    + Add
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
         {/* QUESTION 2 */}
         <div className="space-y-3">
           <div className="flex items-start gap-3">
-            <span className="font-mono text-sm font-bold text-brand-muted bg-brand-border/20 rounded-sm px-2 py-0.5 border border-brand-border">Q2</span>
+            <span className="font-mono text-sm font-bold text-[#E07A5F] bg-[#E07A5F]/5 rounded-sm px-2 py-0.5 border border-[#E07A5F]/15">Q2</span>
             <div className="space-y-1">
-              <label htmlFor="hated-book" className="font-serif text-lg md:text-xl font-medium text-brand-text block">
+              <label className="font-serif text-lg md:text-xl font-medium text-brand-text block">
                 A book you didn't enjoy?
               </label>
             </div>
           </div>
-          <div className="pl-11">
-            <div className="flex items-center gap-3 border-b border-brand-accent/20 focus-within:border-brand-accent pb-2">
-              <BookMinus className="text-brand-muted w-4.5 h-4.5 shrink-0" />
-              <input
-                id="hated-book"
-                type="text"
-                placeholder="Rich Dad Poor Dad, Twilight, etc."
-                value={formData.hatedBook}
-                onChange={(e) => setFormData((prev) => ({ ...prev, hatedBook: e.target.value }))}
-                className="w-full bg-transparent border-none outline-none text-base md:text-lg font-serif text-brand-text placeholder-brand-muted/40"
-              />
-            </div>
+          <div className="pl-11 space-y-3">
+            {hatedBooks.map((book, index) => (
+              <div 
+                key={index} 
+                className="flex items-center gap-3 border-b border-brand-accent/20 focus-within:border-brand-accent pb-2"
+              >
+                <BookMinus className="text-brand-accent w-4.5 h-4.5 shrink-0" />
+                <input
+                  type="text"
+                  placeholder={index === 0 ? "Rich Dad Poor Dad, Twilight, etc." : `Didn't enjoy book #${index + 1}...`}
+                  value={book}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setHatedBooks((prev) => {
+                      const next = [...prev];
+                      next[index] = val;
+                      return next;
+                    });
+                  }}
+                  className="flex-grow bg-transparent border-none outline-none text-base md:text-lg font-serif text-brand-text placeholder-brand-muted/40"
+                />
+
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setHatedBooks((prev) => prev.filter((_, idx) => idx !== index))}
+                    className="p-1 px-2 hover:bg-red-50 text-red-500 hover:text-red-700 hover:border-red-200 border border-transparent rounded-md transition-all text-xs font-mono font-bold cursor-pointer shrink-0"
+                    title="Remove book field"
+                  >
+                    Delete
+                  </button>
+                )}
+
+                {index === hatedBooks.length - 1 && hatedBooks.length < 5 && (
+                  <button
+                    type="button"
+                    onClick={() => setHatedBooks((prev) => [...prev, ""])}
+                    className="p-1 px-2.5 bg-[#365947]/5 hover:bg-[#365947]/10 text-[#365947] hover:text-[#2E4C3D] border border-[#365947]/20 rounded-md transition-all text-xs font-mono font-bold cursor-pointer shrink-0"
+                    title="Add another book field"
+                  >
+                    + Add
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -251,7 +334,7 @@ export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCol
         <button
           id="generate-dna-btn"
           disabled={!isFormFullyValid}
-          onClick={() => isFormFullyValid && onSubmit(formData)}
+          onClick={handleFormSubmit}
           className={`px-8 py-4 font-serif text-sm rounded-full flex items-center gap-2 border transition-all cursor-pointer ${
             isFormFullyValid
               ? "bg-[#E07A5F] border-[#E07A5F] text-white hover:bg-[#D0694D] shadow-md hover:shadow-lg active:scale-98"

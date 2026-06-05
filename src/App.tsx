@@ -6,9 +6,10 @@ import Screen3Loading from "./components/Screen3Loading";
 import Screen4DnaResults from "./components/Screen4DnaResults";
 import Screen5Recommendations from "./components/Screen5Recommendations";
 import Screen6WanderTheStacks from "./components/Screen6WanderTheStacks";
-import Screen7MyLibrary from "./components/Screen7MyLibrary";
+import Screen7MyBookshelf from "./components/Screen7MyBookshelf";
 import HeaderMenu from "./components/HeaderMenu";
 import BookMentor from "./components/BookMentor";
+import { calculateFallbackProfile } from "./data/fallbackDNA";
 
 export default function App() {
   const [activeScreen, setActiveScreen] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7>(1);
@@ -128,72 +129,14 @@ export default function App() {
       setReadingProfile(result);
     } catch (e) {
       console.error("Failed to generate custom Reading DNA from backend. Fetching offline failsafe coordinates:", e);
-      // Failsafe backup is also handled perfectly inside server.ts, but in case of connection drop:
-      setReadingProfile({
-        archetype: "GROWTH ARCHITECT",
-        traits: ["GROWTH ORIENTED", "PRACTICAL BUILDER", "STRATEGIC EXECUTIONER"],
-        reading_pace: "Fast",
-        genre_bias: "Non-Fiction Focus",
-        summary: "You read with an active pencil, translating structured text straight into immediate active growth.",
-        insight: "We noticed an elegant urgency in your selections. You don't view books as inert status pieces, but as active strategic templates designed to reconstruct your productivity, output, and long-term habits.",
-        recommendations: [
-          {
-            title: "The Courage To Be Disliked",
-            author: "Ichiro Kishimi & Fumitake Koga",
-            subtitle: "The Japanese classic on interpersonal freedom.",
-            whyThisBook: "Because right now you are balancing personal growth with public validation. This Adlerian dialogue teaches independence without isolation.",
-            whyNow: "You need to shed arbitrary societal milestones and focus purely on your voluntary contribution to the community.",
-            problemItSolves: "Solves interpersonal anxiety and the constant exhausting drag of seeking external peer approval.",
-            purchaseUrl: "https://www.amazon.com/s?k=The+Courage+To+Be+Disliked",
-            coverColor: "#1B2A3A",
-            coverTextColor: "#EFECE6"
-          },
-          {
-            title: "Atomic Habits",
-            author: "James Clear",
-            subtitle: "An easy & proven way to build good habits.",
-            whyThisBook: "A pristine, system-oriented manual demonstrating how tiny habits compound quietly into overwhelming visual success.",
-            whyNow: "You are designing structural routines to support a major creative inflection point in your professional journey.",
-            problemItSolves: "Solves behavioral inertia and the self-sabotage of setting goals without setting matching routines.",
-            purchaseUrl: "https://www.amazon.com/s?k=Atomic+Habits",
-            coverColor: "#2C3E35",
-            coverTextColor: "#F1EFEA"
-          },
-          {
-            title: "Shoe Dog",
-            author: "Phil Knight",
-            subtitle: "A raw memoir of chaos, vision, and victory.",
-            whyThisBook: "Knight reveals the untidy, muddy reality of building Nike, demonstrating that supreme growth is birthed from surviving raw instability.",
-            whyNow: "You are craving a real, unvarnished business story to keep you humble and resilient during demanding cycles.",
-            problemItSolves: "Conquers clean corporate imposter syndrome by displaying the genuine, messy truth behind grand achievements.",
-            purchaseUrl: "https://www.amazon.com/s?k=Shoe+Dog+Phil+Knight",
-            coverColor: "#613125",
-            coverTextColor: "#F9F6EE"
-          },
-          {
-            title: "Zero to One",
-            author: "Peter Thiel",
-            subtitle: "Notes on startups, or how to build the future.",
-            whyThisBook: "Peter Thiel delivers an incredibly analytical blueprint on how to construct completely unique ventures that create brand new value rather than copy existing ideas.",
-            whyNow: "You seek a contrarian frame of reference to launch fresh creative concepts.",
-            problemItSolves: "Overcomes standard competitive copycat anxiety, guiding you toward true structural innovation.",
-            purchaseUrl: "https://www.amazon.com/s?k=Zero+to+One+Peter+Thiel",
-            coverColor: "#1C1C1F",
-            coverTextColor: "#FAEAEA"
-          },
-          {
-            title: "The 7 Habits of Highly Effective People",
-            author: "Stephen R. Covey",
-            subtitle: "Powerful lessons in personal change.",
-            whyThisBook: "Stephen Covey's classic details a principle-centered approach for solving personal and professional problems, providing a step-by-step roadmap for living with fairness, integrity, honesty, and human dignity.",
-            whyNow: "You want a balanced, values-based operational framework for your everyday routine.",
-            problemItSolves: "Overcomes superficial technique-oriented productivity, anchoring you to deep character principles.",
-            purchaseUrl: "https://www.amazon.com/s?k=7+Habits+of+Highly+Effective+People",
-            coverColor: "#2B4031",
-            coverTextColor: "#F5F2EC"
-          }
-        ]
-      });
+      // Perfect client-side calculation fallback for static hosting/Netlify environments:
+      const calculatedProfile = calculateFallbackProfile(
+        formData.lovedBook,
+        formData.genrePreference,
+        formData.readingStyle,
+        formData.goal
+      );
+      setReadingProfile(calculatedProfile);
     }
   };
 
@@ -218,7 +161,7 @@ export default function App() {
             onBegin={() => setActiveScreen(2)}
             onExploreStacks={() => setActiveScreen(6)}
             libraryBooks={libraryBooks}
-            onOpenFullLibrary={() => setActiveScreen(7)}
+            onOpenFullBookshelf={() => setActiveScreen(7)}
             onRemoveFromLibrary={toggleBookLibrary}
           />
         )}
@@ -273,7 +216,7 @@ export default function App() {
       )}
 
       {activeScreen === 7 && (
-        <Screen7MyLibrary
+        <Screen7MyBookshelf
           libraryBooks={libraryBooks}
           onRemoveBook={toggleBookLibrary}
           onHome={() => setActiveScreen(1)}
