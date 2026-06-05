@@ -1,0 +1,6 @@
+{
+  "name": "Bookmarkd",
+  "description": "A contemporary reading sanctuary to discover your reading DNA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
