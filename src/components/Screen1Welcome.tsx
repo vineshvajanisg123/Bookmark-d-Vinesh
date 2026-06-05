@@ -164,7 +164,6 @@ export default function Screen1Welcome({
               transition={{ duration: 1.2, ease: "easeOut" }}
               src={ladyReadingPhoto}
               alt="A reader reflecting in a quiet personal bookshelf room"
-              referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />
             {/* Visual overlay gradient representing natural sunlight blend */}

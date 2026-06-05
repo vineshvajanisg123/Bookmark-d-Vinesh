@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookOpen, BookMinus, Sparkles } from "lucide-react";
+import { BookOpen, BookMinus, Sparkles, Plus, Trash2 } from "lucide-react";
 import { SurveyState } from "../types";
 
 interface Screen2DnaCollectionProps {
@@ -103,10 +103,11 @@ export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCol
                   <button
                     type="button"
                     onClick={() => setLovedBooks((prev) => prev.filter((_, idx) => idx !== index))}
-                    className="p-1 px-2 hover:bg-red-50 text-red-500 hover:text-red-700 hover:border-red-200 border border-transparent rounded-md transition-all text-xs font-mono font-bold cursor-pointer shrink-0"
+                    className="p-1 px-2.5 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-brand-muted/80 border border-transparent rounded-md transition-all text-xs font-mono font-bold flex items-center gap-1 cursor-pointer shrink-0"
                     title="Remove book field"
                   >
-                    Delete
+                    <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Delete</span>
                   </button>
                 )}
 
@@ -114,10 +115,11 @@ export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCol
                   <button
                     type="button"
                     onClick={() => setLovedBooks((prev) => [...prev, ""])}
-                    className="p-1 px-2.5 bg-[#365947]/5 hover:bg-[#365947]/10 text-[#365947] hover:text-[#2E4C3D] border border-[#365947]/20 rounded-md transition-all text-xs font-mono font-bold cursor-pointer shrink-0"
+                    className="p-1 px-2.5 bg-[#365947]/5 hover:bg-[#365947]/10 text-[#365947] hover:text-[#2E4C3D] border border-[#365947]/20 rounded-md transition-all text-xs font-mono font-bold flex items-center gap-1 cursor-pointer shrink-0"
                     title="Add another book field"
                   >
-                    + Add
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add</span>
                   </button>
                 )}
               </div>
@@ -139,7 +141,7 @@ export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCol
             {hatedBooks.map((book, index) => (
               <div 
                 key={index} 
-                className="flex items-center gap-3 border-b border-brand-accent/20 focus-within:border-brand-accent pb-2"
+                className="flex items-center gap-3 border-b border-brand-accent/30 focus-within:border-brand-accent pb-2"
               >
                 <BookMinus className="text-brand-accent w-4.5 h-4.5 shrink-0" />
                 <input
@@ -161,10 +163,11 @@ export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCol
                   <button
                     type="button"
                     onClick={() => setHatedBooks((prev) => prev.filter((_, idx) => idx !== index))}
-                    className="p-1 px-2 hover:bg-red-50 text-red-500 hover:text-red-700 hover:border-red-200 border border-transparent rounded-md transition-all text-xs font-mono font-bold cursor-pointer shrink-0"
+                    className="p-1 px-2.5 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 text-brand-muted/80 border border-transparent rounded-md transition-all text-xs font-mono font-bold flex items-center gap-1 cursor-pointer shrink-0"
                     title="Remove book field"
                   >
-                    Delete
+                    <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Delete</span>
                   </button>
                 )}
 
@@ -172,10 +175,11 @@ export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCol
                   <button
                     type="button"
                     onClick={() => setHatedBooks((prev) => [...prev, ""])}
-                    className="p-1 px-2.5 bg-[#365947]/5 hover:bg-[#365947]/10 text-[#365947] hover:text-[#2E4C3D] border border-[#365947]/20 rounded-md transition-all text-xs font-mono font-bold cursor-pointer shrink-0"
+                    className="p-1 px-2.5 bg-[#365947]/5 hover:bg-[#365947]/10 text-[#365947] hover:text-[#2E4C3D] border border-[#365947]/20 rounded-md transition-all text-xs font-mono font-bold flex items-center gap-1 cursor-pointer shrink-0"
                     title="Add another book field"
                   >
-                    + Add
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add</span>
                   </button>
                 )}
               </div>

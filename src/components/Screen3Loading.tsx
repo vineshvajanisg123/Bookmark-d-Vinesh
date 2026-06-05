@@ -146,7 +146,7 @@ export default function Screen3Loading({ lovedBook, onFinished }: Screen3Loading
 
       <footer className="z-10 text-center">
         <span className="font-mono text-[9px] uppercase tracking-widest text-[#5E5A55]/70 block">
-          Please wait. The library is listening.
+          Please wait. The sanctuary is listening.
         </span>
       </footer>
     </div>
