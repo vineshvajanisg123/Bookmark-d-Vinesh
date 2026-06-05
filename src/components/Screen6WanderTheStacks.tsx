@@ -130,7 +130,7 @@ export default function Screen6WanderTheStacks({
             )}
             <span className="font-mono text-[9px] uppercase tracking-widest text-[#365947] font-bold">THE DISCOVERY ROOMS</span>
           </div>
-          <h1 className="font-serif text-3xl font-semibold text-brand-text">Discover the Bookshelf</h1>
+          <h1 className="font-serif text-3xl font-semibold text-brand-text">Discover new books</h1>
           <p className="font-serif italic text-brand-muted text-sm">Quietly slide along the shelves. Listen. Explore.</p>
         </div>
 
@@ -305,21 +305,24 @@ export default function Screen6WanderTheStacks({
                   <ArrowUpRight className="w-3.5 h-3.5 text-white/80" />
                 </a>
 
-                <button
-                  onClick={() => {
-                    onToggleLibrary(selectedBook);
-                  }}
-                  className={`w-full py-3.5 text-xs font-display transition-colors rounded-sm cursor-pointer border flex items-center justify-center gap-2 ${
-                    libraryBooks.some((b) => b.title.toLowerCase() === selectedBook.title.toLowerCase())
-                      ? "bg-[#334E3E]/10 border-[#334E3E] text-[#334E3E]"
-                      : "bg-white hover:bg-brand-surface text-[#1D1B1B] border-brand-border hover:border-[#365947]"
-                  }`}
-                >
-                  <BookOpen className="w-4 h-4 shrink-0" />
-                  {libraryBooks.some((b) => b.title.toLowerCase() === selectedBook.title.toLowerCase())
-                    ? "On Your Bookshelf"
-                    : "Save to My Bookshelf"}
-                </button>
+                {libraryBooks.some((b) => b.title.toLowerCase() === selectedBook.title.toLowerCase()) ? (
+                  <span
+                    className="w-full py-3.5 text-xs font-display border border-[#365947]/20 bg-[#365947]/5 text-brand-muted/70 flex items-center justify-center gap-2 select-none cursor-default rounded-sm"
+                  >
+                    <BookOpen className="w-4 h-4 text-brand-muted/40" />
+                    Already in Bookshelf
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => {
+                      onToggleLibrary(selectedBook);
+                    }}
+                    className="w-full py-3.5 text-xs font-display bg-white hover:bg-brand-surface text-[#1D1B1B] border border-brand-border hover:border-[#365947] flex items-center justify-center gap-2 transition-colors rounded-sm cursor-pointer"
+                  >
+                    <BookOpen className="w-4 h-4 shrink-0" />
+                    Add to my Bookshelf
+                  </button>
+                )}
                 
                 <button
                   onClick={() => setSelectedBook(null)}

@@ -216,30 +216,33 @@ export default function Screen5Recommendations({
               <ArrowUpRight className="w-3.5 h-3.5 text-white/80" />
             </a>
 
-            <button
-              onClick={() => {
-                onToggleLibrary({
-                  title: heroBook.title,
-                  author: heroBook.author,
-                  category: "Curation - " + archetype,
-                  description: heroBook.whyThisBook,
-                  coverColor: heroBook.coverColor || "#365947",
-                  coverTextColor: heroBook.coverTextColor || "#FDFCF7",
-                  amazonUrl: heroBook.purchaseUrl,
-                  isbn: heroBook.isbn
-                });
-              }}
-              className={`inline-flex items-center gap-2 px-6 py-3.5 border rounded-full text-xs font-serif font-semibold transition-all cursor-pointer shadow-sm ${
-                libraryBooks.some((b) => b.title.toLowerCase() === heroBook.title.toLowerCase())
-                  ? "bg-[#334E3E]/10 border-[#334E3E] text-[#334E3E]"
-                  : "bg-white border-[#E8E2D8] hover:border-[#365947] text-[#1D1B1B]"
-              }`}
-            >
-              <BookOpen className="w-4 h-4 text-[#365947]" />
-              {libraryBooks.some((b) => b.title.toLowerCase() === heroBook.title.toLowerCase())
-                ? "Added to Bookshelf"
-                : "Save to My Bookshelf"}
-            </button>
+            {libraryBooks.some((b) => b.title.toLowerCase() === heroBook.title.toLowerCase()) ? (
+              <span
+                className="inline-flex items-center gap-2 px-6 py-3.5 border border-[#365947]/20 bg-[#365947]/5 text-brand-muted/70 rounded-full text-xs font-serif font-semibold select-none cursor-default"
+              >
+                <BookOpen className="w-4 h-4 text-brand-muted/40" />
+                Already in Bookshelf
+              </span>
+            ) : (
+              <button
+                onClick={() => {
+                  onToggleLibrary({
+                    title: heroBook.title,
+                    author: heroBook.author,
+                    category: "Curation - " + archetype,
+                    description: heroBook.whyThisBook,
+                    coverColor: heroBook.coverColor || "#365947",
+                    coverTextColor: heroBook.coverTextColor || "#FDFCF7",
+                    amazonUrl: heroBook.purchaseUrl,
+                    isbn: heroBook.isbn
+                  });
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3.5 border bg-white border-[#E8E2D8] hover:border-[#365947] text-[#1D1B1B] rounded-full text-xs font-serif font-semibold transition-all cursor-pointer shadow-sm hover:shadow"
+              >
+                <BookOpen className="w-4 h-4 text-[#365947]" />
+                Add to my Bookshelf
+              </button>
+            )}
           </div>
         </div>
 
@@ -329,30 +332,31 @@ export default function Screen5Recommendations({
                     </span>
                     
                     <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => {
-                          onToggleLibrary({
-                            title: book.title,
-                            author: book.author,
-                            category: "Curation Companion",
-                            description: book.whyThisBook,
-                            coverColor: book.coverColor || "#1F3B2E",
-                            coverTextColor: book.coverTextColor || "#FDFCF7",
-                            amazonUrl: book.purchaseUrl,
-                            isbn: book.isbn
-                          });
-                        }}
-                        className={`text-[10px] font-sans font-medium flex items-center gap-1 cursor-pointer transition-colors ${
-                          libraryBooks.some((b) => b.title.toLowerCase() === book.title.toLowerCase())
-                            ? "text-[#E07A5F]"
-                            : "text-[#5E5A55] hover:text-[#365947]"
-                        }`}
-                      >
-                        <BookOpen className="w-3.5 h-3.5 shrink-0" />
-                        {libraryBooks.some((b) => b.title.toLowerCase() === book.title.toLowerCase())
-                          ? "On Bookshelf"
-                          : "Save to Bookshelf"}
-                      </button>
+                      {libraryBooks.some((b) => b.title.toLowerCase() === book.title.toLowerCase()) ? (
+                        <span className="text-[10px] font-sans font-medium flex items-center gap-1 text-brand-muted/70 cursor-default select-none">
+                          <BookOpen className="w-3.5 h-3.5 shrink-0 text-brand-muted/40" />
+                          Already in Bookshelf
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            onToggleLibrary({
+                              title: book.title,
+                              author: book.author,
+                              category: "Curation Companion",
+                              description: book.whyThisBook,
+                              coverColor: book.coverColor || "#1F3B2E",
+                              coverTextColor: book.coverTextColor || "#FDFCF7",
+                              amazonUrl: book.purchaseUrl,
+                              isbn: book.isbn
+                            });
+                          }}
+                          className="text-[10px] font-sans font-medium flex items-center gap-1 cursor-pointer text-[#5E5A55] hover:text-[#365947] transition-colors"
+                        >
+                          <BookOpen className="w-3.5 h-3.5 shrink-0" />
+                          Add to my Bookshelf
+                        </button>
+                      )}
 
                       <span className="text-[#E8E2D8] text-xs">|</span>
 
@@ -388,7 +392,7 @@ export default function Screen5Recommendations({
             className="px-6 py-3 border border-[#365947] text-[#365947] hover:bg-[#365947] hover:text-white font-sans text-xs font-semibold rounded-full transition-all duration-300 cursor-pointer shadow-xs"
             id="stacks-wander-btn"
           >
-            Discover the Bookshelf
+            Discover new books
           </button>
         </div>
       </footer>

@@ -224,7 +224,7 @@ export default function App() {
         />
       )}
       </div>
-      <BookMentor />
+      <BookMentor libraryBooks={libraryBooks} onToggleLibrary={toggleBookLibrary} />
     </div>
   );
 }

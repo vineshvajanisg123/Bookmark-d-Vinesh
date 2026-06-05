@@ -58,13 +58,7 @@ export default function HeaderMenu({ onHome, onBegin, activeScreen }: HeaderMenu
             onClick={() => scrollToSection("my-bookshelf-section")} 
             className="hover:text-[#365947] cursor-pointer transition-colors"
           >
-            Your Bookshelf
-          </button>
-          <button 
-            onClick={() => scrollToSection("reviews-section")} 
-            className="hover:text-[#365947] cursor-pointer transition-colors"
-          >
-            Reviews
+            My Bookshelf
           </button>
         </nav>
 

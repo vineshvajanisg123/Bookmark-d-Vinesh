@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MessageSquare, X, Send, Sparkles, AlertCircle, RefreshCw, BookOpen, User, CornerDownLeft } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { Book } from "../types";
 
 interface Message {
   id: string;
@@ -9,7 +10,12 @@ interface Message {
   timestamp: Date;
 }
 
-export default function BookMentor() {
+interface BookMentorProps {
+  libraryBooks?: Book[];
+  onToggleLibrary?: (book: Book) => void;
+}
+
+export default function BookMentor({ libraryBooks = [], onToggleLibrary }: BookMentorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
@@ -387,6 +393,46 @@ If none of these feel quite right, tell me what feels off and we'll keep explori
                           <span className="font-mono text-[8px] uppercase tracking-wide text-[#5E5A55] font-extrabold mr-1">Ideal if you want:</span>
                           {book.ideal}
                         </p>
+                      </div>
+                    )}
+
+                    {/* Add to my books action matching target aesthetics */}
+                    {onToggleLibrary && libraryBooks && (
+                      <div className="pt-2.5 flex items-center justify-between border-t border-dashed border-[#E8E2D8] mt-2.5">
+                        {libraryBooks.some((b) => b.title.toLowerCase() === book.title.toLowerCase()) ? (
+                          <span className="text-[10px] font-sans font-semibold flex items-center gap-1.5 text-brand-muted/70 cursor-default select-none">
+                            <BookOpen className="w-3.5 h-3.5 text-brand-muted/40 shrink-0" />
+                            Already in Bookshelf
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              onToggleLibrary({
+                                title: book.title,
+                                author: book.author || "Unknown Author",
+                                category: "AI Mentor Selection",
+                                description: book.whyFits || "Recommended by your Book Mentor.",
+                                coverColor: "#5E4D44",
+                                coverTextColor: "#FAF6F0",
+                                amazonUrl: "https://www.amazon.com/s?k=" + encodeURIComponent(book.title + " " + (book.author || "")),
+                                isbn: ""
+                              });
+                            }}
+                            className="text-[10px] font-sans font-semibold text-[#E07A5F] hover:text-[#D0694D] flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            <BookOpen className="w-3.5 h-3.5 shrink-0 text-[#E07A5F]" />
+                            Add to my Bookshelf
+                          </button>
+                        )}
+
+                        <a
+                          href={"https://www.amazon.com/s?k=" + encodeURIComponent(book.title + " " + (book.author || ""))}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] font-sans font-semibold text-[#365947] hover:text-[#2E4C3D] flex items-center gap-0.5"
+                        >
+                          Acquire
+                        </a>
                       </div>
                     )}
                   </div>
