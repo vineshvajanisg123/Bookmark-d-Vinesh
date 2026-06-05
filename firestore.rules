@@ -1,0 +1,177 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global safety net - Default Deny All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Core security parameters
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-\\+\\=\\.\\%]+$');
+    }
+
+    // Entity validator: User Profile
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'createdAt'])
+        && data.keys().size() == 2
+        && data.email is string
+        && data.email.size() > 3
+        && data.email.size() <= 128
+        && data.createdAt == request.time;
+    }
+
+    // Entity validator: Survey Submission
+    function isValidSubmission(data) {
+      return data.keys().hasAll(['lovedBook', 'hatedBook', 'genrePreference', 'readingStyle', 'goal', 'submittedAt'])
+        && data.keys().size() == 6
+        && data.lovedBook is string && data.lovedBook.size() <= 3000
+        && data.hatedBook is string && data.hatedBook.size() <= 3000
+        && data.genrePreference is string && data.genrePreference.size() <= 128
+        && data.readingStyle is string && data.readingStyle.size() <= 128
+        && data.goal is string && data.goal.size() <= 128
+        && data.submittedAt == request.time;
+    }
+
+    // Entity validator: Reading Profile
+    function isValidProfile(data) {
+      return data.keys().hasAll([
+        'archetype', 'traits', 'reading_pace', 'genre_bias', 
+        'summary', 'insight', 'recommendations', 'updatedAt'
+      ])
+        && data.archetype is string && data.archetype.size() <= 128
+        && data.traits is list && data.traits.size() <= 20
+        && data.reading_pace is string && (data.reading_pace == 'Slow' || data.reading_pace == 'Medium' || data.reading_pace == 'Fast')
+        && data.genre_bias is string && data.genre_bias.size() <= 128
+        && data.summary is string && data.summary.size() <= 3000
+        && data.insight is string && data.insight.size() <= 3000
+        && data.recommendations is list && data.recommendations.size() <= 30
+        && data.updatedAt == request.time;
+    }
+
+    // Entity validator: Recommended Book Entry
+    function isValidRecommendedBook(data) {
+      return data.keys().hasAll(['title', 'author', 'whyThisBook', 'whyNow', 'problemItSolves', 'recordedAt'])
+        && data.title is string && data.title.size() <= 256
+        && data.author is string && data.author.size() <= 256
+        && data.whyThisBook is string && data.whyThisBook.size() <= 3000
+        && data.whyNow is string && data.whyNow.size() <= 3000
+        && data.problemItSolves is string && data.problemItSolves.size() <= 3000
+        && data.recordedAt == request.time;
+    }
+
+    // Entity validator: Interaction Click/Screen Navigation Log
+    function isValidInteractionLog(data) {
+      return data.keys().hasAll(['action', 'pageOrScreen', 'timestamp'])
+        && data.action is string && data.action.size() <= 128
+        && data.pageOrScreen is string && data.pageOrScreen.size() <= 128
+        && data.timestamp == request.time;
+    }
+
+    // Entity validator: Bookshelf Book Collection
+    function isValidBookshelfBook(data) {
+      return data.keys().hasAll(['title', 'author', 'category', 'description', 'addedAt'])
+        && data.title is string && data.title.size() <= 256
+        && data.author is string && data.author.size() <= 256
+        && data.category is string && data.category.size() <= 128
+        && data.description is string && data.description.size() <= 3000
+        && data.addedAt == request.time;
+    }
+
+    // Entity validator: Removed Bookshelf Record
+    function isValidRemovedBook(data) {
+      return data.keys().hasAll(['title', 'author', 'category', 'description', 'removedAt'])
+        && data.title is string && data.title.size() <= 256
+        && data.author is string && data.author.size() <= 256
+        && data.category is string && data.category.size() <= 128
+        && data.description is string && data.description.size() <= 3000
+        && data.removedAt == request.time;
+    }
+
+    // Entity validator: Chat Log Message
+    function isValidChatMessage(data) {
+      return data.keys().hasAll(['role', 'text', 'timestamp'])
+        && data.keys().size() == 3
+        && data.role is string && (data.role == 'user' || data.role == 'model')
+        && data.text is string && data.text.size() <= 12000
+        && data.timestamp == request.time;
+    }
+
+    // User Resource Trees
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) 
+        && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isOwner(userId);
+
+      match /profiles/{profileId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(profileId) && isValidProfile(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(profileId) && isValidProfile(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /surveySubmissions/{submissionId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(submissionId) && isValidSubmission(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(submissionId) && isValidSubmission(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /recsHistory/{recId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(recId) && isValidRecommendedBook(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(recId) && isValidRecommendedBook(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /interactions/{interactionId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(interactionId) && isValidInteractionLog(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(interactionId) && isValidInteractionLog(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /bookshelf/{bookId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(bookId) && isValidBookshelfBook(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(bookId) && isValidBookshelfBook(request.resource.data)
+          && request.resource.data.addedAt == resource.data.addedAt;
+        allow delete: if isOwner(userId);
+      }
+
+      match /removedBooks/{bookId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(bookId) && isValidRemovedBook(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(bookId) && isValidRemovedBook(request.resource.data)
+          && request.resource.data.removedAt == resource.data.removedAt;
+        allow delete: if isOwner(userId);
+      }
+
+      match /chatHistory/{messageId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(messageId) && isValidChatMessage(request.resource.data);
+        allow update: if isOwner(userId) && isValidId(messageId) && isValidChatMessage(request.resource.data)
+          && request.resource.data.timestamp == resource.data.timestamp;
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

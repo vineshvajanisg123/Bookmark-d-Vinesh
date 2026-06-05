@@ -12,6 +12,7 @@ interface Screen5RecommendationsProps {
   onHome: () => void;
   libraryBooks: Book[];
   onToggleLibrary: (book: Book) => void;
+  onLogInteraction?: (action: string, bookTitle?: string, author?: string) => void;
 }
 
 export default function Screen5Recommendations({
@@ -22,6 +23,7 @@ export default function Screen5Recommendations({
   onHome,
   libraryBooks = [],
   onToggleLibrary,
+  onLogInteraction,
 }: Screen5RecommendationsProps) {
   
   // High fidelity default fallback of 5 curated recommendations 
@@ -180,6 +182,9 @@ export default function Screen5Recommendations({
               href={heroBook.purchaseUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                onLogInteraction?.("buy_from_amazon", heroBook.title, heroBook.author);
+              }}
               className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-[#365947] text-white hover:bg-[#2E4C3D] rounded-full text-xs font-serif font-semibold transition-all cursor-pointer shadow-sm hover:shadow"
               id="hero-buy-link"
             >
@@ -319,6 +324,9 @@ export default function Screen5Recommendations({
                         href={book.purchaseUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => {
+                          onLogInteraction?.("buy_from_amazon", book.title, book.author);
+                        }}
                         className="inline-flex items-center gap-1 text-xs font-sans font-medium text-[#365947] hover:text-[#2E4C3D] group cursor-pointer transition-colors"
                       >
                         Acquire

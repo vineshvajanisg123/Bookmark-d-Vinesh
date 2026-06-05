@@ -193,7 +193,7 @@ export default function Screen2DnaCollection({ onSubmit, onBack }: Screen2DnaCol
             <span className="font-mono text-sm font-bold text-[#E07A5F] bg-[#E07A5F]/5 rounded-sm px-2 py-0.5 border border-[#E07A5F]/15">Q3</span>
             <div className="space-y-1">
               <span className="font-serif text-lg md:text-xl font-medium text-brand-text block">
-                Choose what describes you.
+                Select your favourite Genre.
               </span>
               <p className="font-sans text-xs text-brand-muted font-light">
                 Select your genre landscape.

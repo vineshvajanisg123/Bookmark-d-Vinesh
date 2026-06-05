@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { MessageSquare, X, Send, Sparkles, AlertCircle, RefreshCw, BookOpen, User, CornerDownLeft } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Book } from "../types";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../lib/firebase";
+import { getChatHistory, saveChatMessage } from "../lib/dbSync";
 
 interface Message {
   id: string;
@@ -22,35 +25,65 @@ export default function BookMentor({ libraryBooks = [], onToggleLibrary }: BookM
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showConfirmReset, setShowConfirmReset] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize companion conversation with session-persistence
+  // Initialize companion conversation with session-persistence & Firebase Cloud Sync
   useEffect(() => {
-    const saved = localStorage.getItem("bookmarkd_mentor_chat");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        const hydrated = parsed.map((m: any) => ({
-          ...m,
-          timestamp: new Date(m.timestamp)
-        }));
-        setMessages(hydrated);
-        return;
-      } catch (e) {
-        // ignore
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
+      if (user) {
+        try {
+          const dbHistory = await getChatHistory(user.uid);
+          if (dbHistory && dbHistory.length > 0) {
+            const mapped: Message[] = dbHistory.map((m, idx) => ({
+              id: `db-${idx}-${Date.now()}`,
+              role: m.role === "user" ? "user" : "assistant",
+              text: m.text,
+              timestamp: new Date()
+            }));
+            setMessages(mapped);
+          } else {
+            setMessages([
+              {
+                id: "welcome",
+                role: "assistant",
+                text: "Tell me, what are you hoping a book will do for you right now?",
+                timestamp: new Date(),
+              }
+            ]);
+          }
+        } catch (e) {
+          console.error("Cloud dialogue fetch failed:", e);
+        }
+      } else {
+        const saved = localStorage.getItem("bookmarkd_mentor_chat");
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            const hydrated = parsed.map((m: any) => ({
+              ...m,
+              timestamp: new Date(m.timestamp)
+            }));
+            setMessages(hydrated);
+          } catch (e) {
+            // ignore
+          }
+        } else {
+          setMessages([
+            {
+              id: "welcome",
+              role: "assistant",
+              text: "Tell me, what are you hoping a book will do for you right now?",
+              timestamp: new Date(),
+            },
+          ]);
+        }
       }
-    }
-    
-    // Default system welcome sequence
-    setMessages([
-      {
-        id: "welcome",
-        role: "assistant",
-        text: "Tell me, what are you hoping a book will do for you right now?",
-        timestamp: new Date(),
-      },
-    ]);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   // Save changes to localStorage
@@ -149,6 +182,10 @@ If none of these feel quite right, tell me what feels off and we'll keep explori
     saveChatHistory(updatedHistory);
     setIsLoading(true);
 
+    if (currentUser) {
+      saveChatMessage(currentUser.uid, "user", textToSend).catch(console.error);
+    }
+
     try {
       // Map history to server payloads
       const payloadMessages = updatedHistory.map((m) => ({
@@ -180,6 +217,10 @@ If none of these feel quite right, tell me what feels off and we'll keep explori
       const finalHistory = [...updatedHistory, assistantMessage];
       setMessages(finalHistory);
       saveChatHistory(finalHistory);
+
+      if (currentUser) {
+        saveChatMessage(currentUser.uid, "model", assistantMessage.text).catch(console.error);
+      }
     } catch (err: any) {
       console.warn("Express server not detected (this is normal on static setups). Invoking premium client-side Book Mentor flow:", err);
       
@@ -197,6 +238,10 @@ If none of these feel quite right, tell me what feels off and we'll keep explori
       const finalHistory = [...updatedHistory, assistantMessage];
       setMessages(finalHistory);
       saveChatHistory(finalHistory);
+
+      if (currentUser) {
+        saveChatMessage(currentUser.uid, "model", replyText).catch(console.error);
+      }
     } finally {
       setIsLoading(false);
     }

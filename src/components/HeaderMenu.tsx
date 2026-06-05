@@ -1,13 +1,21 @@
-import { BookOpen } from "lucide-react";
+import { BookOpen, LogIn, LogOut, User as UserIcon, Check } from "lucide-react";
+import { User } from "firebase/auth";
 
 interface HeaderMenuProps {
   onHome: () => void;
   onBegin: () => void;
+  onDiscover: () => void;
   onBookshelf: () => void;
   activeScreen: number;
 }
 
-export default function HeaderMenu({ onHome, onBegin, onBookshelf, activeScreen }: HeaderMenuProps) {
+export default function HeaderMenu({ 
+  onHome, 
+  onBegin, 
+  onDiscover,
+  onBookshelf, 
+  activeScreen
+}: HeaderMenuProps) {
   return (
     <header className="sticky top-0 z-40 bg-[#FAF6F0]/90 backdrop-blur-md border-b border-[#E8E2D8] h-16 flex items-center px-4 sm:px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto flex items-center justify-between w-full">
@@ -46,6 +54,14 @@ export default function HeaderMenu({ onHome, onBegin, onBookshelf, activeScreen 
             }`}
           >
             My Reading DNA
+          </button>
+          <button 
+            onClick={onDiscover} 
+            className={`hover:text-[#365947] cursor-pointer transition-colors pb-0.5 ${
+              activeScreen === 6 ? "text-[#365947] font-bold border-b-2 border-[#365947]" : "border-b-2 border-transparent"
+            }`}
+          >
+            Discover New Books
           </button>
           <button 
             onClick={onBookshelf} 

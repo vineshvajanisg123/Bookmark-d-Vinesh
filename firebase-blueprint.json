@@ -1,0 +1,158 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Standard app user document container.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "createdAt"]
+    },
+    "SurveySubmission": {
+      "title": "SurveySubmission",
+      "description": "Full details of the survey/DNA questionnaire filled by the user.",
+      "type": "object",
+      "properties": {
+        "lovedBook": { "type": "string" },
+        "hatedBook": { "type": "string" },
+        "genrePreference": { "type": "string" },
+        "readingStyle": { "type": "string" },
+        "goal": { "type": "string" },
+        "submittedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["lovedBook", "hatedBook", "genrePreference", "readingStyle", "goal", "submittedAt"]
+    },
+    "ReadingProfile": {
+      "title": "ReadingProfile",
+      "description": "User's literary profile calculated via conversational survey.",
+      "type": "object",
+      "properties": {
+        "lovedBook": { "type": "string" },
+        "hatedBook": { "type": "string" },
+        "genrePreference": { "type": "string" },
+        "readingStyle": { "type": "string" },
+        "goal": { "type": "string" },
+        "archetype": { "type": "string" },
+        "traits": { "type": "array" },
+        "reading_pace": { "type": "string" },
+        "genre_bias": { "type": "string" },
+        "summary": { "type": "string" },
+        "insight": { "type": "string" },
+        "recommendations": { "type": "array" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["archetype", "traits", "reading_pace", "genre_bias", "summary", "insight", "recommendations", "updatedAt"]
+    },
+    "RecommendedBook": {
+      "title": "RecommendedBook",
+      "description": "An individual recommended book recorded for the user.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "whyThisBook": { "type": "string" },
+        "whyNow": { "type": "string" },
+        "problemItSolves": { "type": "string" },
+        "purchaseUrl": { "type": "string" },
+        "coverColor": { "type": "string" },
+        "coverTextColor": { "type": "string" },
+        "isbn": { "type": "string" },
+        "recordedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "author", "whyThisBook", "whyNow", "problemItSolves", "recordedAt"]
+    },
+    "InteractionLog": {
+      "title": "InteractionLog",
+      "description": "Logs of user interaction clicks (Add to Bookshelf, Buy on Amazon, Screen Navigation, etc.)",
+      "type": "object",
+      "properties": {
+        "bookTitle": { "type": "string" },
+        "author": { "type": "string" },
+        "action": { "type": "string" },
+        "pageOrScreen": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["action", "pageOrScreen", "timestamp"]
+    },
+    "BookshelfBook": {
+      "title": "BookshelfBook",
+      "description": "An individual book stored in the user's permanent bookshelf.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "coverColor": { "type": "string" },
+        "coverTextColor": { "type": "string" },
+        "isbn": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "author", "category", "description", "addedAt"]
+    },
+    "RemovedBook": {
+      "title": "RemovedBook",
+      "description": "Information from a book that was removed from the user's bookshelf.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "coverColor": { "type": "string" },
+        "coverTextColor": { "type": "string" },
+        "isbn": { "type": "string" },
+        "removedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "author", "category", "description", "removedAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "An individual message in the user's conversation with the AI Book Mentor.",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["role", "text", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Primary user document profiles."
+    },
+    "/users/{userId}/profiles/{profileId}": {
+      "schema": "ReadingProfile",
+      "description": "Computed literary DNA profiles for each user."
+    },
+    "/users/{userId}/surveySubmissions/{submissionId}": {
+      "schema": "SurveySubmission",
+      "description": "Historical log of survey answers filled by the user."
+    },
+    "/users/{userId}/recsHistory/{recId}": {
+      "schema": "RecommendedBook",
+      "description": "Detailed history of books recommended by the AI engine."
+    },
+    "/users/{userId}/interactions/{interactionId}": {
+      "schema": "InteractionLog",
+      "description": "Audit trail of click actions, screens visited, and affiliate redirections."
+    },
+    "/users/{userId}/bookshelf/{bookId}": {
+      "schema": "BookshelfBook",
+      "description": "Safe, private repository of books collected by the user."
+    },
+    "/users/{userId}/removedBooks/{bookId}": {
+      "schema": "RemovedBook",
+      "description": "Full audit log of any book removed from the user's shelf."
+    },
+    "/users/{userId}/chatHistory/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Conversation chat histories mapped to their AI Book Mentor."
+    }
+  }
+}

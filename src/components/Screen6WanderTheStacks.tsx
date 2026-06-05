@@ -46,6 +46,7 @@ interface Screen6WanderTheStacksProps {
   onHome: () => void;
   libraryBooks: Book[];
   onToggleLibrary: (book: Book) => void;
+  onLogInteraction?: (action: string, bookTitle?: string, author?: string) => void;
 }
 
 export default function Screen6WanderTheStacks({ 
@@ -54,6 +55,7 @@ export default function Screen6WanderTheStacks({
   onHome,
   libraryBooks = [],
   onToggleLibrary,
+  onLogInteraction,
 }: Screen6WanderTheStacksProps) {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -255,6 +257,9 @@ export default function Screen6WanderTheStacks({
                   href={selectedBook.amazonUrl || `https://www.amazon.com/s?k=${encodeURIComponent(selectedBook.title + " " + selectedBook.author)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => {
+                    onLogInteraction?.("buy_from_amazon", selectedBook.title, selectedBook.author);
+                  }}
                   className="w-full py-4 bg-[#365947] hover:bg-[#2E4C3D] text-[#F8F6F1] text-xs font-display flex items-center justify-center gap-2.5 transition-colors duration-300 rounded-sm cursor-pointer shadow-sm hover:shadow"
                 >
                   <ShoppingBag className="w-4 h-4 text-white" />

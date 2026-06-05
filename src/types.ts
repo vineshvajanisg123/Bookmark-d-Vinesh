@@ -41,6 +41,11 @@ export interface ReadingProfile {
   summary: string;
   insight: string;
   recommendations: Recommendation[];
+  lovedBook?: string;
+  hatedBook?: string;
+  genrePreference?: string;
+  readingStyle?: string;
+  goal?: string;
 }
 
 export interface CuratedShelf {
