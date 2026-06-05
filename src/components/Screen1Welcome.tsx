@@ -8,7 +8,7 @@ import {
 import { useState } from "react";
 import { Book } from "../types";
 import { getBookCover } from "../data/curatedBooks";
-import ladyReadingPhoto from "../assets/images/lady_reading_book_1780645883723.png";
+import ladyReadingPhoto from "../assets/images/lady_reading_book_1780668147309.png";
 
 function BookCoverImageSmall({
   title,
