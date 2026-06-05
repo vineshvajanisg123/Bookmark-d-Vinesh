@@ -7,79 +7,10 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Book } from "../types";
-import { getBookCover } from "../data/curatedBooks";
+import BookCover from "./BookCover";
 import ladyReadingPhoto from "../assets/images/lady_reading_book_1780668147309.png";
 
-function BookCoverImageSmall({
-  title,
-  isbn,
-  coverColor = "#2C1B1B",
-  coverTextColor = "#FDFCF7",
-  category,
-  author,
-}: {
-  title: string;
-  isbn?: string;
-  coverColor?: string;
-  coverTextColor?: string;
-  category?: string;
-  author: string;
-}) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
 
-  const coverUrl = getBookCover(title, isbn);
-
-  return (
-    <div 
-      className="relative w-full h-full overflow-hidden transition-all duration-300"
-      style={{
-        backgroundColor: coverColor
-      }}
-    >
-      {(!coverUrl || !imageLoaded || imageError) && (
-        <div 
-          className="absolute inset-0 flex flex-col justify-between p-2.5 border-l-3 border-black/25 select-none text-[#FDFCF7] text-left"
-          style={{
-            backgroundColor: coverColor,
-            color: coverTextColor
-          }}
-        >
-          <div className="space-y-1">
-            {category && (
-              <span className="font-mono text-[6px] uppercase tracking-widest opacity-80 block whitespace-nowrap overflow-hidden text-ellipsis">
-                {category}
-              </span>
-            )}
-            <h5 className="font-serif text-[8px] font-semibold uppercase leading-tight line-clamp-3">
-              {title}
-            </h5>
-          </div>
-          <span className="font-serif text-[7.5px] italic opacity-85 block text-left">
-            {author.split(" ").pop()}
-          </span>
-        </div>
-      )}
-
-      {coverUrl && !imageError && (
-        <img 
-          src={coverUrl} 
-          alt={title} 
-          referrerPolicy="no-referrer"
-          className={`absolute inset-0 w-full h-full object-contain p-1 z-10 transition-all duration-300 hover:scale-105 ${
-            imageLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageError(true)}
-        />
-      )}
-
-      {/* Crease/Bevel overlay */}
-      <div className="absolute inset-0 z-20 pointer-events-none bg-gradient-to-r from-white/10 via-transparent to-black/15" />
-      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-r from-black/25 to-transparent z-25" />
-    </div>
-  );
-}
 
 interface Screen1WelcomeProps {
   onBegin: () => void;
@@ -181,7 +112,7 @@ export default function Screen1Welcome({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="font-mono text-[10px] uppercase tracking-widest text-[#365947] font-bold">
-              MY BOOKSHELF SANCTUARY
+              MY BOOKSHELF
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#E07A5F]" />
             <span className="text-[10px] font-mono text-[#5E5A55] uppercase tracking-wider font-semibold bg-[#FAF6F0] px-2 py-0.5 rounded-full border border-[#E8E2D8]">
@@ -228,13 +159,14 @@ export default function Screen1Welcome({
 
                     {/* Aspect Ratio Cover styled similar to the Discovery Rooms / Wander the Stacks page */}
                     <div className="relative w-full aspect-[2/3] shrink-0 overflow-hidden bg-brand-surface border-b border-[#E8E2D8]/40 shadow-xs">
-                      <BookCoverImageSmall
+                      <BookCover
                         title={book.title}
+                        author={book.author}
                         isbn={book.isbn}
                         coverColor={book.coverColor}
                         coverTextColor={book.coverTextColor}
                         category={book.category}
-                        author={book.author}
+                        className="w-full h-full"
                       />
                     </div>
 

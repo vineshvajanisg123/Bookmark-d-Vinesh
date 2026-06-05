@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { BookOpen, Compass, Search, X, ShoppingBag, ArrowUpRight, ArrowLeft, Home, ChevronLeft, ChevronRight } from "lucide-react";
 import { Book, CuratedShelf } from "../types";
-import { CURATED_STACKS, POPULAR_BOOKS, getBookCover } from "../data/curatedBooks";
+import { CURATED_STACKS, POPULAR_BOOKS } from "../data/curatedBooks";
+import BookCover from "./BookCover";
 
 interface BookCoverImageProps {
   title: string;
@@ -23,63 +24,19 @@ function BookCoverImage({
   category,
   author,
   sizeClass = "w-full h-full",
-  paddingClass = "p-2"
+  paddingClass = "p-1"
 }: BookCoverImageProps) {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
-
-  const coverUrl = getBookCover(title, isbn);
-
   return (
-    <div 
-      className={`relative ${sizeClass} shrink-0 overflow-hidden shadow-md rounded-r-xs border border-[#E8E2D8]/40 transition-all duration-300`}
-      style={{
-        backgroundColor: coverColor
-      }}
-    >
-      {/* Fallback structured book interface: hidden or only visible if image hasn't loaded or fails */}
-      {(!coverUrl || !imageLoaded || imageError) && (
-        <div 
-          className="absolute inset-0 flex flex-col justify-between p-3 border-l-4 border-black/25 select-none text-[#FDFCF7] transition-all duration-300"
-          style={{
-            backgroundColor: coverColor,
-            color: coverTextColor
-          }}
-        >
-          <div className="space-y-1.5 text-left">
-            {category && (
-              <span className="font-mono text-[7px] uppercase tracking-widest opacity-80 block whitespace-nowrap overflow-hidden text-ellipsis">
-                {category}
-              </span>
-            )}
-            <h5 className="font-serif text-[10px] font-semibold uppercase leading-tight line-clamp-3">
-              {title}
-            </h5>
-          </div>
-          <span className="font-serif text-[8px] italic opacity-85 block text-left">
-            {author.split(" ")[0]}
-          </span>
-        </div>
-      )}
-
-      {/* Real Cover Image fitted completely in containment box, no zoom zoom crop */}
-      {coverUrl && !imageError && (
-        <img 
-          src={coverUrl} 
-          alt={title} 
-          referrerPolicy="no-referrer"
-          className={`absolute inset-0 w-full h-full object-contain ${paddingClass} z-10 transition-all duration-500 hover:scale-105 ${
-            imageLoaded ? "opacity-100" : "opacity-0"
-          }`}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageError(true)}
-        />
-      )}
-
-      {/* Visual tactile cover style cues (Spine crease & 3D beveling) */}
-      <div className="absolute inset-0 z-20 pointer-events-none bg-gradient-to-r from-white/10 via-transparent to-black/15" />
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-r from-black/20 to-transparent z-25" />
-    </div>
+    <BookCover
+      title={title}
+      author={author}
+      isbn={isbn}
+      coverColor={coverColor}
+      coverTextColor={coverTextColor}
+      category={category}
+      className={sizeClass}
+      paddingClass={paddingClass}
+    />
   );
 }
 

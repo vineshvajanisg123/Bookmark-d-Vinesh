@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Book, SurveyState, ReadingProfile } from "./types";
 import Screen1Welcome from "./components/Screen1Welcome";
 import Screen2DnaCollection from "./components/Screen2DnaCollection";
@@ -15,6 +15,11 @@ export default function App() {
   const [activeScreen, setActiveScreen] = useState<1 | 2 | 3 | 4 | 5 | 6 | 7>(1);
   const [surveyData, setSurveyData] = useState<SurveyState | null>(null);
   const [readingProfile, setReadingProfile] = useState<ReadingProfile | null>(null);
+
+  // Auto-scroll to top upon screen navigation to prevent retaining scroll positions
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as any });
+  }, [activeScreen]);
 
   // Initialize library volumes with local cache support, starting with 6 gorgeous default selections
   const [libraryBooks, setLibraryBooks] = useState<Book[]>(() => {
@@ -152,6 +157,7 @@ export default function App() {
           activeScreen={activeScreen}
           onHome={() => setActiveScreen(1)}
           onBegin={handleReset}
+          onBookshelf={() => setActiveScreen(7)}
         />
       )}
       

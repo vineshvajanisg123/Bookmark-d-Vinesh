@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { ShoppingBag, ArrowUpRight, Award, RefreshCcw, BookOpen } from "lucide-react";
 import { Recommendation, Book } from "../types";
-import { getBookCover } from "../data/curatedBooks";
+import BookCover from "./BookCover";
 
 interface Screen5RecommendationsProps {
   archetype: string;
@@ -131,43 +131,15 @@ export default function Screen5Recommendations({
           <div className="flex justify-center md:justify-start pt-2">
             <div className="relative group hover:scale-[1.01] transition-transform duration-300">
               <div className="w-[16.8rem] h-[22.8rem] rounded-r-md shadow-2xl overflow-hidden border border-[#D8D2C4] relative">
-                <div 
-                  className="absolute inset-0 flex flex-col justify-between p-6 border-l-8 border-black/30 select-none bg-[#1B2A3A] text-[#FCFBF8]"
-                  style={{
-                    backgroundColor: heroBook.coverColor || "#1B2A3A",
-                    color: heroBook.coverTextColor || "#FCFBF8"
-                  }}
-                >
-                  <div className="space-y-4">
-                    <span className="font-mono text-[8px] uppercase tracking-widest opacity-60">
-                      MAPPED FOR {archetype.replace(/_/g, " ")}
-                    </span>
-                    <p className="font-serif font-bold text-lg leading-tight uppercase tracking-wide line-clamp-4">
-                      {heroBook.title}
-                    </p>
-                  </div>
-
-                  <div className="border-t border-current/25 pt-4">
-                    <p className="font-serif italic text-[11px] leading-relaxed opacity-85">
-                      {heroBook.author}
-                    </p>
-                    <span className="block font-mono text-[7px] uppercase tracking-widest opacity-50 mt-1">
-                      Bookmarkd literary system
-                    </span>
-                  </div>
-                </div>
-                {/* Genuine Cover Image fallback integration */}
-                {getBookCover(heroBook.title, heroBook.isbn) && (
-                  <img 
-                    src={getBookCover(heroBook.title, heroBook.isbn)} 
-                    alt={heroBook.title} 
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 w-full h-full object-cover z-10"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                )}
+                <BookCover
+                  title={heroBook.title}
+                  author={heroBook.author}
+                  isbn={heroBook.isbn}
+                  coverColor={heroBook.coverColor || "#1B2A3A"}
+                  coverTextColor={heroBook.coverTextColor || "#FCFBF8"}
+                  category={`Mapped for ${archetype.replace(/_/g, " ")}`}
+                  className="w-full h-full"
+                />
               </div>
             </div>
           </div>
@@ -265,34 +237,17 @@ export default function Screen5Recommendations({
                 className="group flex gap-5 p-4 border border-brand-border bg-brand-surface/40 hover:bg-white hover:border-[#365947]/30 hover:shadow-md transition-all duration-300 rounded-xl"
               >
                 {/* Visual Cover Mini-Container */}
-                <div className="shrink-0">
+                <div className="shrink-0 animate-fade-in">
                   <div className="w-[6.2rem] h-[8.5rem] relative shadow-md rounded-r-sm overflow-hidden border border-[#E8E2D8]/45">
-                    <div 
-                      className="absolute inset-0 flex flex-col justify-between p-2.5 border-l-3 border-black/35 select-none text-[9px] font-bold"
-                      style={{
-                        backgroundColor: book.coverColor || "#3F2E2E",
-                        color: book.coverTextColor || "#FAF6F0"
-                      }}
-                    >
-                      <p className="font-serif text-[9px] leading-tight uppercase line-clamp-3">
-                        {book.title}
-                      </p>
-                      <span className="font-serif text-[7.5px] italic font-light opacity-80">
-                        {book.author.split(" ").pop()}
-                      </span>
-                    </div>
-                    {/* Cover image integration */}
-                    {getBookCover(book.title, book.isbn) && (
-                      <img 
-                        src={getBookCover(book.title, book.isbn)} 
-                        alt={book.title} 
-                        referrerPolicy="no-referrer"
-                        className="absolute inset-0 w-full h-full object-cover z-10"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    )}
+                    <BookCover
+                      title={book.title}
+                      author={book.author}
+                      isbn={book.isbn}
+                      coverColor={book.coverColor || "#3F2E2E"}
+                      coverTextColor={book.coverTextColor || "#FAF6F0"}
+                      category={`Companion`}
+                      className="w-full h-full"
+                    />
                   </div>
                 </div>
 

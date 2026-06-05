@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Book } from "../types";
 import { X, ShoppingBag, ArrowUpRight, ArrowLeft } from "lucide-react";
-import { getBookCover } from "../data/curatedBooks";
+import BookCover from "./BookCover";
 
 interface Screen7MyBookshelfProps {
   libraryBooks: Book[];
@@ -42,7 +42,7 @@ export default function Screen7MyBookshelf({
 
         {/* Title and Intro */}
         <div className="space-y-2 border-b border-[#E8E2D8]/60 pb-6">
-          <h1 className="font-serif text-3xl md:text-4xl font-semibold text-brand-text">My Bookshelf Sanctuary</h1>
+          <h1 className="font-serif text-3xl md:text-4xl font-semibold text-brand-text">My Bookshelf</h1>
           <p className="font-serif italic text-brand-muted text-sm max-w-xl">
             A quiet collection of volumes you have saved during your stay in the Discovery Rooms. No metrics, no social pressure. Just your path.
           </p>
@@ -96,7 +96,6 @@ export default function Screen7MyBookshelf({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filtered.map((book) => {
-              const coverUrl = getBookCover(book.title, book.isbn);
               return (
                 <div
                   key={book.title}
@@ -114,32 +113,16 @@ export default function Screen7MyBookshelf({
                   <div className="space-y-4">
                     {/* Cover Render representation */}
                     <div className="flex justify-center bg-[#FCFBF8] py-4 rounded-xl border border-[#E8E2D8]/40">
-                      <div className="w-[6.8rem] h-[9.3rem] relative shadow-md rounded-r-xs overflow-hidden border border-[#E8E2D8]/45">
-                        <div
-                          className="absolute inset-0 flex flex-col justify-between p-2.5 border-l-3 border-black/35 select-none text-[9px] font-bold"
-                          style={{
-                            backgroundColor: book.coverColor || "#3F2E2E",
-                            color: book.coverTextColor || "#FAF6F0"
-                          }}
-                        >
-                          <p className="font-serif leading-tight uppercase line-clamp-3">
-                            {book.title}
-                          </p>
-                          <span className="font-serif text-[7.5px] italic font-light opacity-80 block text-left">
-                            {book.author.split(" ").pop()}
-                          </span>
-                        </div>
-                        {coverUrl && (
-                          <img
-                            src={coverUrl}
-                            alt={book.title}
-                            referrerPolicy="no-referrer"
-                            className="absolute inset-0 w-full h-full object-cover z-10 p-1"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                        )}
+                      <div className="w-[6.8rem] h-[9.3rem] relative shadow-md rounded-r-xs overflow-hidden border border-[#E8E2D8]/45 animate-fade-in">
+                        <BookCover
+                          title={book.title}
+                          author={book.author}
+                          isbn={book.isbn}
+                          coverColor={book.coverColor}
+                          coverTextColor={book.coverTextColor}
+                          category={book.category}
+                          className="w-full h-full"
+                        />
                       </div>
                     </div>
 
